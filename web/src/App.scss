@@ -1,0 +1,68 @@
+@import '~bootstrap/scss/bootstrap.scss';
+
+:root {
+  --primary-color: #5e17eb;
+}
+.primary-color {
+  color: #5e17eb;
+}
+.bd-red-500 {
+  color: #dc3545;
+  font-weight: 500;
+}
+.bd-indigo-500 {
+  color: #6610f2;
+  font-weight: 500;
+}
+button:focus {
+  outline: none;
+}
+.btn-primary {
+  background-color: var(--primary-color);
+}
+.btn-primary:hover {
+  background-color: var(--primary-color);
+  opacity: 0.8;
+}
+.back-home-btn {
+  padding: 10px;
+  color: #fff;
+  background-color: var(--primary-color);
+  border-radius: 25px;
+}
+.back-home-btn:hover,
+.back-home-btn:focus {
+  animation: pulse 1s;
+  box-shadow: 0 0 0 2em rgba(#fff, 0);
+  background-color: var(--primary-color);
+}
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 adjust-hue(#027aeb, 45deg);
+  }
+}
+.content__wrap {
+  width: 100%;
+  min-height: 100vh;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-image: linear-gradient(to right, #5e17eb, #8c52ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.page-icon > svg {
+  color: var(--primary-color);
+  font-size: 60px;
+}
+.card-header {
+  background-color: var(--primary-color);
+  color: white;
+  text-align: center;
+}
+p.card-text > span {
+  color: var(--primary-color);
+  font-size: large;
+  font-weight: bold;
+}

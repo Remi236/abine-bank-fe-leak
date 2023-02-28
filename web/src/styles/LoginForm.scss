@@ -1,0 +1,48 @@
+.login-wrap {
+  width: 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-image: linear-gradient(to right, #5e17eb, #8c52ff);
+}
+.login-wrap .login-bg {
+  width: 100%;
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+.login-wrap .login-content {
+  background-color: whitesmoke;
+  border-radius: 10px;
+  padding: 30px;
+  width: 550px;
+}
+.login-wrap .login-content .title {
+  font-size: 28px;
+  line-height: 34px;
+}
+.login-wrap .login-content .form-label {
+  font-size: 16px;
+  line-height: 24px;
+}
+.login-wrap .login-content select,
+.login-wrap .login-content input {
+  border: 1px solid #5e17eb;
+}
+.login-wrap .login-content .btn-signin {
+  color: white;
+  background-image: linear-gradient(to right, #5e17eb, #8c52ff);
+}
+.login-wrap .login-content .btn-signin:hover {
+  opacity: 0.8;
+}
+.forgot-pass a {
+  color: #5e17eb;
+}

@@ -1,0 +1,175 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                    Int              @id @default(autoincrement())
+  number                String
+  bankId                Int
+  paymentNumber         String?
+  balance               Decimal?
+  isClosed              Boolean          @default(false)
+  externalFullname      String?
+  Sender                SavedRecipient[] @relation("sender")
+  Recipients            SavedRecipient[] @relation("recipient")
+  RecipientTransactions Transaction[]    @relation("recipientTransaction")
+  SenderTransactions    Transaction[]    @relation("senderTransaction")
+  Bank                  Bank             @relation(fields: [bankId], references: [id])
+  Creditors             CreditorDebtor[] @relation("creditor")
+  Debtors               CreditorDebtor[] @relation("debtor")
+  Customer              Customer?
+  Otp                   Otp[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([number, bankId])
+}
+
+// id = 1 is abine bank
+model Bank {
+  id       Int       @id @default(autoincrement())
+  bankCode String    @unique
+  name     String    @unique
+  Accounts Account[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Otp {
+  id         Int      @id @default(autoincrement())
+  hashedCode String?
+  type       OtpType
+  expiresAt  DateTime
+  Account    Account  @relation(fields: [accountId], references: [id])
+  accountId  Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([accountId, type])
+}
+
+model SavedRecipient {
+  id               Int     @id @default(autoincrement())
+  recipientId      Int
+  senderId         Int
+  nickname         String? @unique
+  RecipientAccount Account @relation(name: "recipient", fields: [recipientId], references: [id])
+  SenderAccount    Account @relation(name: "sender", fields: [senderId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([recipientId, senderId])
+}
+
+model CreditorDebtor {
+  creditorDebtorId Int          @id @default(autoincrement())
+  debtorId         Int
+  creditorId       Int
+  amount           Decimal
+  content          String?
+  status           DebtorStatus @default(IN_DEBT)
+  CreditorAccount  Account      @relation(name: "creditor", fields: [creditorId], references: [id])
+  DebtorAccount    Account      @relation(name: "debtor", fields: [debtorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Transaction {
+  id               Int             @id @default(autoincrement())
+  amount           Decimal
+  content          String?
+  type             TransactionType
+  feePayer         FeePayer        @default(SENDER)
+  sign             String?
+  recipientId      Int
+  senderId         Int
+  RecipientAccount Account         @relation(name: "recipientTransaction", fields: [recipientId], references: [id])
+  SenderAccount    Account         @relation(name: "senderTransaction", fields: [senderId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id                 Int       @id @default(autoincrement())
+  email              String    @unique
+  username           String    @unique
+  fullname           String
+  phone              String
+  hashedPassword     String
+  hashedRefreshToken String?
+  role               Role      @default(CUSTOMER)
+  Customer           Customer?
+  Admin              Admin?
+  Employee           Employee?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Customer {
+  id        Int     @id
+  User      User    @relation(fields: [id], references: [id])
+  accountId Int     @unique
+  Account   Account @relation(fields: [accountId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Admin {
+  id   Int  @id
+  User User @relation(fields: [id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Employee {
+  id   Int  @id
+  User User @relation(fields: [id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+  EMPLOYEE
+}
+
+enum TransactionType {
+  TRANSFER
+  PAID_OFF
+}
+
+enum DebtorStatus {
+  IN_DEBT
+  PAID_OFF
+  CANCELLED
+}
+
+enum FeePayer {
+  RECIPIENT
+  SENDER
+}
+
+enum OtpType {
+  TRANSFER
+  PAID_OFF
+  FORGOT_PASSWORD
+}
